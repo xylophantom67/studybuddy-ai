@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyBuddy AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f3ff;
+    color: #292747;
+}
+
+header {
+    background: #6554d9;
+    color: white;
+    padding: 22px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h2 {
+    margin: 0;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.hero {
+    text-align: center;
+    padding: 75px 20px;
+    background: linear-gradient(135deg, #7566ed, #a18af7);
+    color: white;
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    font-size: 18px;
+}
+
+.hero button {
+    background: white;
+    color: #6554d9;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+section {
+    padding: 45px 8%;
+    text-align: center;
+}
+
+.subjects {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+.subject {
+    background: white;
+    padding: 28px;
+    width: 230px;
+    border-radius: 18px;
+    box-shadow: 0 5px 18px #00000012;
+}
+
+.subject .emoji {
+    font-size: 45px;
+}
+
+.subject button, #nextBtn, #restartBtn {
+    background: #6554d9;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.subject button:hover, #nextBtn:hover {
+    background: #4838b7;
+}
+
+#quiz {
+    display: none;
+    max-width: 650px;
+    margin: 25px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 5px 18px #00000012;
+}
+
+.option {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin: 10px 0;
+    background: #f0efff;
+    border: 2px solid transparent;
+    border-radius: 9px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 16px;
+}
+
+.option:hover {
+    border-color: #6554d9;
+}
+
+.option:disabled {
+    cursor: default;
+    color: #292747;
+    opacity: 1;
+}
+
+#feedback {
+    font-weight: bold;
+    min-height: 25px;
+    margin: 18px 0;
+}
+
+footer {
+    background: #292747;
+    color: white;
+    text-align: center;
+    padding: 22px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>📚 StudyBuddy AI</h2>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#subjects">Subjects</a>
+        <a href="#about">About</a>
+    </nav>
+</header>
+
+<div class="hero" id="home">
+    <h1>Learn Smarter with StudyBuddy!</h1>
+    <p>Your fun learning companion for Maths, Science and English.</p>
+    <p>Practice • Learn • Improve</p>
+    <button onclick="document.getElementById('subjects').scrollIntoView({behavior:'smooth'})">
+        Start Learning
+    </button>
+</div>
+
+<section id="subjects">
+    <h2>Choose Your Subject 📖</h2>
+    <p>Select a subject and test your knowledge!</p>
+
+    <div class="subjects">
+        <div class="subject">
+            <div class="emoji">➗</div>
+            <h3>Maths</h3>
+            <p>Challenge your mathematical skills.</p>
+            <button onclick="startQuiz('Maths')">Start Quiz</button>
+        </div>
+
+        <div class="subject">
+            <div class="emoji">🔬</div>
+            <h3>Science</h3>
+            <p>Explore the amazing world of science.</p>
+            <button onclick="startQuiz('Science')">Start Quiz</button>
+        </div>
+
+        <div class="subject">
+            <div class="emoji">📚</div>
+            <h3>English</h3>
+            <p>Improve your language skills.</p>
+            <button onclick="startQuiz('English')">Start Quiz</button>
+        </div>
+    </div>
+
+    <div id="quiz">
+        <h2 id="quizTitle">Quiz</h2>
+        <p id="progress"></p>
+        <h3 id="question"></h3>
+        <div id="options"></div>
+        <p id="feedback"></p>
+        <button id="nextBtn" onclick="nextQuestion()" style="display:none">
+            Next Question
+        </button>
+        <h3 id="result"></h3>
+        <button id="restartBtn" onclick="backToSubjects()" style="display:none">
+            Choose Another Subject
+        </button>
+    </div>
+</section>
+
+<section id="about">
+    <h2>About StudyBuddy AI 💡</h2>
+    <p>
+        StudyBuddy AI is a student learning assistant designed to make
+        studying easier and more enjoyable. It provides quizzes,
+        instant feedback and scores to encourage learning.
+    </p>
+    <h3>Our Mission</h3>
+    <p>Learn smarter, one question at a time!</p>
+</section>
+
+<footer>
+    <p>© 2026 StudyBuddy AI | Learn • Practice • Succeed</p>
+</footer>
+
+<script>
+const quizzes = {
+    Maths: [
+        ["What is 3/4 as a decimal?", ["0.25","0.50","0.75","1.25"], 2],
+        ["What is 15 × 6?", ["80","90","100","75"], 1],
+        ["Solve: 2x + 4 = 12", ["2","3","4","5"], 2],
+        ["What is the square of 9?", ["18","72","81","99"], 2],
+        ["What is 25% of 200?", ["25","40","50","75"], 2]
+    ],
+    Science: [
+        ["Which planet is called the Red Planet?", ["Venus","Mars","Jupiter","Saturn"], 1],
+        ["What gas do plants absorb?", ["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"], 2],
+        ["What is the centre of an atom called?", ["Cell","Nucleus","Core","Electron"], 1],
+        ["Which organ pumps blood?", ["Lungs","Brain","Heart","Liver"], 2],
+        ["At what temperature does water boil?", ["50°C","75°C","100°C","150°C"], 2]
+    ],
+    English: [
+        ["Which word is a noun?", ["Run","Beautiful","Happiness","Quickly"], 2],
+        ["What is the opposite of ancient?", ["Old","Modern","Historic","Past"], 1],
+        ["Choose the correct spelling.", ["Recieve","Receive","Receeve","Receve"], 1],
+        ["Which is a synonym of happy?", ["Sad","Angry","Joyful","Tired"], 2],
+        ["Identify the adjective: The bright sun shines.", ["Sun","Shines","The","Bright"], 3]
+    ]
+};
+
+let currentSubject = "";
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function startQuiz(subject) {
+    currentSubject = subject;
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("quiz").style.display = "block";
+    document.getElementById("quizTitle").innerText = subject + " Quiz";
+    document.getElementById("result").innerText = "";
+    document.getElementById("restartBtn").style.display = "none";
+
+    document.getElementById("quiz").scrollIntoView({behavior:"smooth"});
+    showQuestion();
+}
+
+function showQuestion() {
+    answered = false;
+    const q = quizzes[currentSubject][currentQuestion];
+
+    document.getElementById("progress").innerText =
+        "Question " + (currentQuestion + 1) + " of 5";
+
+    document.getElementById("question").innerText = q[0];
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("nextBtn").style.display = "none";
+
+    const options = document.getElementById("options");
+    options.innerHTML = "";
+
+    q[1].forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.innerText = String.fromCharCode(65 + index) + ". " + option;
+        button.onclick = () => checkAnswer(index);
+        options.appendChild(button);
+    });
+}
+
+function checkAnswer(index) {
+    if (answered) return;
+    answered = true;
+
+    const q = quizzes[currentSubject][currentQuestion];
+    const buttons = document.querySelectorAll(".option");
+
+    buttons.forEach(button => button.disabled = true);
+
+    if (index === q[2]) {
+        score++;
+        document.getElementById("feedback").innerText =
+            "🎉 Correct! Excellent work!";
+    } else {
+        document.getElementById("feedback").innerText =
+            "❌ Not quite! Correct answer: " + q[1][q[2]];
+    }
+
+    document.getElementById("nextBtn").style.display = "inline-block";
+    document.getElementById("nextBtn").innerText =
+        currentQuestion === 4 ? "See My Score" : "Next Question";
+}
+
+function nextQuestion() {
+    currentQuestion++;
+
+    if (currentQuestion < 5) {
+        showQuestion();
+    } else {
+        document.getElementById("question").innerText = "Quiz Completed!";
+        document.getElementById("progress").innerText = "Your final score";
+        document.getElementById("options").innerHTML = "";
+        document.getElementById("feedback").innerText = "";
+
+        let message = score === 5 ? "Perfect score! 🌟" :
+                      score >= 3 ? "Great effort! Keep learning! 👏" :
+                      "Keep practising. You can do it! 💪";
+
+        document.getElementById("result").innerText =
+            "You scored " + score + " out of 5. " + message;
+
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("restartBtn").style.display = "inline-block";
+    }
+}
+
+function backToSubjects() {
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("subjects").scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+</body>
+</html>
